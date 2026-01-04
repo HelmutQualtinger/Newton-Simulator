@@ -15,6 +15,7 @@ const App: React.FC = () => {
     paused: false,
     mouseStrength: 15000,
     palette: 'fireworks',
+    intensity: 1.0,
   });
 
   const [insight, setInsight] = useState<AIInsight>({
@@ -85,13 +86,13 @@ const App: React.FC = () => {
       ctx.globalCompositeOperation = 'lighter';
       
       for (const p of particles) {
-        // Draw glow
-        const glowSize = p.radius * 12;
+        // Draw glow scaled by intensity config
+        const glowSize = p.radius * 12 * config.intensity;
         const gradient = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowSize);
         
         // Ensure color string is valid for CSS
         gradient.addColorStop(0, p.color);
-        gradient.addColorStop(0.3, p.color.replace('1.0)', '0.4)'));
+        gradient.addColorStop(0.3, p.color.replace('1.0)', `${0.4 * config.intensity})`));
         gradient.addColorStop(1, 'transparent');
         
         ctx.fillStyle = gradient;
@@ -114,7 +115,7 @@ const App: React.FC = () => {
       ctx.globalCompositeOperation = 'source-over';
     }
     requestRef.current = requestAnimationFrame(animate);
-  }, [config.showTrails, config.trailLength, config.mouseStrength, config.paused]);
+  }, [config.showTrails, config.trailLength, config.mouseStrength, config.paused, config.intensity]);
 
   useEffect(() => {
     requestRef.current = requestAnimationFrame(animate);
@@ -249,6 +250,19 @@ const App: React.FC = () => {
             value={config.friction} 
             onChange={(e) => setConfig({...config, friction: parseFloat(e.target.value)})}
             className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-emerald-500"
+          />
+        </div>
+
+        <div>
+          <div className="flex justify-between items-center mb-2">
+            <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Particle Intensity</label>
+            <span className="text-xs font-mono text-white">{config.intensity.toFixed(1)}x</span>
+          </div>
+          <input 
+            type="range" min="0.1" max="3" step="0.1" 
+            value={config.intensity} 
+            onChange={(e) => setConfig({...config, intensity: parseFloat(e.target.value)})}
+            className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-white"
           />
         </div>
 

@@ -21,7 +21,8 @@ export interface SimulationConfig {
   showTrails: boolean;
   paused: boolean;
   mouseStrength: number; // Strength of the mouse attractor
-  palette: ColorPalette; // New: Selected color palette
+  palette: ColorPalette; // Selected color palette
+  intensity: number; // Glow brightness/size scale
 }
 
 export interface AIInsight {
